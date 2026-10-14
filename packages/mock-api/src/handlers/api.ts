@@ -232,6 +232,29 @@ export const mockApiHandlers = [
   // Health & Metrics
   http.get('/healthz', () => HttpResponse.json({ status: 'healthy' })),
   http.get('/metrics', () => HttpResponse.text('# Mock metrics\nhttp_requests_total 123\n')),
+
+  // VON Network / Indy Pool Configuration
+  http.get('/v1/von-network/config', () => {
+    return HttpResponse.json({
+      genesisUrl: process.env.GENESIS_URL || 'http://host.docker.internal:9000/genesis',
+      poolName: process.env.INDY_POOL_NAME || 'pool',
+      nodes: [
+        { host: 'host.docker.internal', port: 9701 },
+        { host: 'host.docker.internal', port: 9703 },
+        { host: 'host.docker.internal', port: 9705 },
+        { host: 'host.docker.internal', port: 9707 },
+      ],
+    });
+  }),
+
+  http.get('/v1/von-network/genesis', () => {
+    // In production, this would fetch from von-network webserver
+    // For demo, return a minimal genesis structure
+    return HttpResponse.json({
+      transactions: [],
+      note: 'Fetch from von-network webserver at /genesis endpoint',
+    });
+  }),
 ];
 
 export const allHandlers = mockApiHandlers;

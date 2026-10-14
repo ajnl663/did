@@ -88,6 +88,9 @@ services:
       - "3001:3001"
     environment:
       NODE_ENV: development
+      # Indy/VON Network config
+      GENESIS_URL: ${GENESIS_URL:-http://host.docker.internal:9000/genesis}
+      INDY_POOL_NAME: ${INDY_POOL_NAME:-pool}
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3001/healthz"]
       interval: 10s

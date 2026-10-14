@@ -17,6 +17,7 @@ import {
   VerificationPolicy,
   QRFrameData,
   OfflineVerificationState,
+  VonNetworkConfig,
 } from './types';
 
 export interface CredentialEngine {
@@ -82,6 +83,9 @@ export interface CredentialEngine {
   // Events
   on(event: 'credentialOffer' | 'verificationRequest' | 'trustBundleUpdate' | 'connectionChange', callback: (data: any) => void): void;
   off(event: string, callback: (data: any) => void): void;
+
+  // VON Network / Indy Pool
+  getVonNetworkConfig(): Promise<VonNetworkConfig>;
 }
 
 export const createCredentialEngine = (): CredentialEngine => {

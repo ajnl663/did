@@ -34,7 +34,7 @@ A self-sovereign identity (SSI) system for migrant and informal workers in Mumba
 
 | Layer | Technology |
 |-------|------------|
-| Ledger | Hyperledger Indy (permissioned, RBFT) |
+| Ledger | Hyperledger Indy (permissioned, RBFT) via **von-network** |
 | Credentials | AnonCreds (predicates, selective disclosure) |
 | Wallet | React Native (Expo) + Android only |
 | Issuer Agent | ACA-Py (multi-tenant, askar-anoncreds) |
@@ -46,21 +46,64 @@ A self-sovereign identity (SSI) system for migrant and informal workers in Mumba
 
 ## 🚀 Quick Start
 
+### Prerequisites
+- Node.js 18+, pnpm 9+
+- Docker & Docker Compose
+- Expo Go app on Android phone (for mobile testing)
+
+### 1. Start von-network (Indy Pool)
 ```bash
+# One-time setup
+git clone https://github.com/bcgov/von-network
+cd von-network
+./manage start
+
+# This starts:
+# - 4 Indy nodes on ports 9701-9708
+# - Web UI at http://localhost:9000 (genesis, node status)
+# - Genesis file at http://localhost:9000/genesis
+```
+
+### 2. Start Application Services
+```bash
+# In did-workers directory
+cd /home/solo/did-workers
+
 # Install dependencies
 make install
 
-# Start development environment
+# Start all services (Postgres, Keycloak, MinIO, Tails, Mock API, Portals, Monitoring)
 make up
 
 # Seed demo data (Ramesh persona, trust chain, credentials)
 make seed
 
-# Start portals dev server
+# Start portals dev server (Terminal 1)
 make dev-portals
 
-# Start mobile dev server (in another terminal)
+# Start mobile dev server (Terminal 2)
 make dev-mobile
+```
+
+### 3. Access the Demo
+| Service | URL | Notes |
+|---------|-----|-------|
+| **Portals (Web)** | http://localhost:3000 | Full demo: Issuer/Verifier/Admin |
+| **Mobile Web** | http://localhost:8081 | Expo web preview |
+| **Mobile Native** | Via Expo Go | Scan QR from `make dev-mobile` |
+| **von-network UI** | http://localhost:9000 | Indy pool status, genesis |
+
+### 4. Login (Demo)
+- Go to http://localhost:3000
+- Select any role (Issuer Operator, Verifier Operator, Governance Admin)
+- Enter PIN `1234` (any 4+ digits works)
+- Navigate portals
+
+### 5. Mobile App (Expo Go)
+```bash
+make dev-mobile
+# Scan QR with Expo Go app on Android phone
+# Flow: Language → PIN → Tabs (Wallet + Verifier)
 ```
 
 ## 📱 Demo Persona: Ramesh
@@ -95,6 +138,7 @@ did-workers/
 ├── infra/
 │   ├── docker-compose.yml
 │   └── monitoring/
+├── von-network/          # External (clone separately)
 └── research/
     └── benchmarks/
 ```
@@ -130,6 +174,28 @@ Metrics measured: payload size, QR frames, proof generation time, verification t
 4. **Verification**: Verifier creates request QR → Worker scans → Consent → Presents proof
 5. **Offline**: Verifier goes offline → Scans cached trust data → Validates proof
 6. **Revocation**: Issuer revokes credential → Verifier syncs → Rejects revoked proof
+
+## 🔧 Configuration
+
+### Environment Variables
+```bash
+# .env file (optional)
+GENESIS_URL=http://localhost:9000/genesis    # von-network genesis endpoint
+INDY_POOL_NAME=pool                           # Indy pool name
+POSTGRES_PASSWORD=dev_password                # Database password
+KEYCLOAK_ADMIN=admin                          # Keycloak admin user
+KEYCLOAK_ADMIN_PASSWORD=admin                 # Keycloak admin password
+MINIO_ROOT_USER=minioadmin                    # MinIO credentials
+MINIO_ROOT_PASSWORD=minioadmin
+```
+
+### von-network Integration
+The app connects to von-network via:
+- **Genesis URL**: `http://localhost:9000/genesis` (or `host.docker.internal:9000` from Docker)
+- **Indy Nodes**: `localhost:9701-9708` (4 nodes × node/client ports)
+- **Pool Name**: `pool`
+
+From inside Docker containers, use `host.docker.internal` to reach host's von-network.
 
 ## 📝 License
 

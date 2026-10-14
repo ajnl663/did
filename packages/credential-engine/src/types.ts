@@ -186,3 +186,9 @@ export interface OfflineVerificationState {
   cachedCredentials: Credential[];
   pendingVerifications: VerificationRequest[];
 }
+
+export interface VonNetworkConfig {
+  genesisUrl: string;
+  poolName: string;
+  nodes: Array<{ host: string; port: number }>;
+}

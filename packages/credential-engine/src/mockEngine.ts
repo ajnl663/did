@@ -18,6 +18,7 @@ import {
   VerificationPolicy,
   QRFrameData,
   OfflineVerificationState,
+  VonNetworkConfig,
 } from './types';
 import {
   DEMO_ORGANIZATIONS,
@@ -293,6 +294,19 @@ export function createMockCredentialEngine(): CredentialEngine {
     },
 
     async refreshRevocationWitness(credentialId: string): Promise<void> {},
+
+    async getVonNetworkConfig(): Promise<VonNetworkConfig> {
+      return {
+        genesisUrl: 'http://host.docker.internal:9000/genesis',
+        poolName: 'pool',
+        nodes: [
+          { host: 'host.docker.internal', port: 9701 },
+          { host: 'host.docker.internal', port: 9703 },
+          { host: 'host.docker.internal', port: 9705 },
+          { host: 'host.docker.internal', port: 9707 },
+        ],
+      };
+    },
 
     async getOrganizations(): Promise<Organization[]> {
       return [...DEMO_ORGANIZATIONS];

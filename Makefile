@@ -14,7 +14,7 @@ all: up
 # Start full dev environment (portals + mock API)
 up:
 	@echo "Starting DID Workers development environment..."
-	@docker-compose -f $(COMPOSE_FILE) up -d
+	@docker compose -f $(COMPOSE_FILE) up -d
 	@echo "Waiting for services to be healthy..."
 	@sleep 10
 	@echo "Services started!"
@@ -23,7 +23,7 @@ up:
 
 # Stop dev environment
 down:
-	@docker-compose -f $(COMPOSE_FILE) down
+	@docker compose -f $(COMPOSE_FILE) down
 
 # Seed demo data
 seed:
