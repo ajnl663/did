@@ -1,0 +1,26 @@
+{
+  "name": "did-workers",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@9.6.0",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "dev:portals": "pnpm --filter @did-workers/portals dev",
+    "dev:mobile": "pnpm --filter @did-workers/mobile start",
+    "build:portals": "pnpm --filter @did-workers/portals build",
+    "build:mobile": "pnpm --filter @did-workers/mobile expo build:android -t apk",
+    "lint": "pnpm -r exec eslint .",
+    "typecheck": "pnpm -r exec tsc --noEmit",
+    "up": "pnpm dev:portals & pnpm dev:mobile",
+    "seed": "node packages/mock-api/dist/seed.js",
+    "apk": "pnpm build:mobile"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "typescript": "^5.5.3"
+  }
+}

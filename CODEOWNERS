@@ -1,0 +1,42 @@
+# CODEOWNERS - Human review required for security-critical files
+# Per Master Prompt A2.2: wallet key handling, offline verification engine,
+# trust-bundle signature verification, trust-chain resolution, revocation checks,
+# Keycloak/RBAC enforcement
+
+# Mobile - Wallet key handling, offline verification
+/apps/mobile/src/app/(auth)/pin.tsx @solo
+/apps/mobile/src/app/(tabs)/wallet.tsx @solo
+/apps/mobile/src/app/(tabs)/verifier.tsx @solo
+/apps/mobile/src/context/CredentialEngineContext.tsx @solo
+
+# Credential Engine - Core interface and mock
+/packages/credential-engine/src/engine.ts @solo
+/packages/credential-engine/src/mockEngine.ts @solo
+/packages/credential-engine/src/types.ts @solo
+
+# Mock API - Trust bundle, revocation, verification handlers
+/packages/mock-api/src/handlers/api.ts @solo
+/packages/mock-api/src/seed/demoData.ts @solo
+/packages/mock-api/src/types/index.ts @solo
+
+# Portals - Keycloak/RBAC, verification logic
+/apps/portals/src/context/CredentialEngineContext.tsx @solo
+/apps/portals/src/pages/verifier/*.tsx @solo
+/apps/portals/src/pages/issuer/IssueCredential.tsx @solo
+/apps/portals/src/pages/issuer/RevokeCredential.tsx @solo
+/apps/portals/src/pages/admin/*.tsx @solo
+/apps/portals/src/pages/LoginPage.tsx @solo
+
+# Design System - Security-related components
+/packages/design-system/src/components/Modal.tsx @solo
+/packages/design-system/src/components/Alert.tsx @solo
+
+# Infrastructure - Security configuration
+/infra/docker-compose.yml @solo
+/infra/keycloak/realm-export.json @solo
+
+# Documentation - Security decisions
+/docs/ADR-001-bifold-deferral.md @solo
+/docs/security/threat-model.md @solo
+/docs/risk-register.md @solo
+/docs/DEPENDENCIES.md @solo

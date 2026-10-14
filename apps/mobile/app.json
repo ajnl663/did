@@ -1,0 +1,52 @@
+{
+  "expo": {
+    "name": "DID Workers",
+    "slug": "did-workers",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0ea5e9"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "org.didworkers.app"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#0ea5e9"
+      },
+      "package": "org.didworkers.app",
+      "permissions": ["CAMERA", "BIOMETRIC", "USE_FINGERPRINT"],
+      "versionCode": 1
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-camera",
+      "expo-barcode-scanner",
+      [
+        "expo-av",
+        {
+          "microphonePermission": "Allow DID Workers to play voice prompts."
+        }
+      ]
+    ],
+    "scheme": "didworkers",
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "demo-project"
+      }
+    }
+  }
+}

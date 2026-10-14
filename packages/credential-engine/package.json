@@ -1,0 +1,17 @@
+{
+  "name": "@did-workers/credential-engine",
+  "version": "0.1.0",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "dependencies": {
+    "@did-workers/mock-api": "workspace:*",
+    "@did-workers/design-system": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.3"
+  }
+}

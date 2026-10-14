@@ -1,0 +1,87 @@
+The development server returned response error
+code: 404
+
+URL: http://exp.direct
+/node_modules/.pnpm/expo-router@3.5.24
+_q3dffv5ixarsidny44cpayftbi/node_modules/expo
+-router/entry.bundle?platform=android&dev=true&
+hot=false&lazy=true&transform.engine=hermes&
+transform.bytecode=true&transform.routerRoot=src
+%2Fapp
+
+Body:
+{"originModulePath":"/home/solo/did-workers
+/apps/mobile/.","targetModuleName":
+"./node_modules/.pnpm/expo-router@3.5.24
+_q3dffv5ixarsidny44cpayftbi/node_modules
+/expo-router/entry","message":"Unable to resolve
+module ./node_modules/.pnpm/expo-router@3.5
+.24_q3dffv5ixarsidny44cpayftbi/node_modules
+/expo-router/entry from /home/solo/did-workers/
+apps/mobile/.: \n\nNone of these files exist:
+\n * node_modules/.pnpm/expo-router@3.5.24
+_q3dffv5ixarsidny44cpayftbi/node_modules/expo
+-router/entry(.android.ts|.native.ts|.ts|.android
+.tsx|.native.tsx|.tsx|.android.mjs|.native.mjs|.mjs|
+.android.js|.native.js|.js|.android.jsx|.native.jsx|.jsx|
+.android.json|.native.json|.json|.android.cjs|.native
+.cjs|.cjs|.android.scss|.native.scss|.scss|.android
+.sass|.native.sass|.sass|.android.css|.native.css|
+.css)\n * node_modules/.pnpm/expo-router@3.5.24
+_q3dffv5ixarsidny44cpayftbi/node_modules/expo
+-router/entry","cause":{"candidates":{"file":{"type":
+"sourceFile","filePathPrefix":"node_modules/.pnpm
+/expo-router@3.5.24_q3dffv5ixarsidny44cpayftbi
+/node_modules/expo-router/entry","candidateExts":
+["",".android.ts",".native.ts",".ts",".android.tsx",".native
+.tsx",".tsx",".android.mjs",".native.mjs",".mjs",".android
+.js",".native.js",".js",".android.jsx",".native.jsx",".jsx"
+,".android.json",".native.json",".json",".android.cjs"
+,".native.cjs",".cjs",".android.scss",".native.scss"
+,".scss",".android.sass",".native.sass",".sass",".android
+.css",".native.css",".css"]},"dir":{"type":"sourceFile"
+_modules/metro-resolver/src/resolve.js:32:12)\n
+at ModuleResolver.resolveDependency (/home
+/solo/did-workers/node_modules/.pnpm/metro@0
+.80.12/node_modules/metro/src/node-haste
+/DependencyGraph/ModuleResolution.js:73:31)\n
+at DependencyGraph.resolveDependency (/home
+/solo/did-workers/node_modules/.pnpm/metro@0
+.80.12/node_modules/metro/src/node-haste
+/DependencyGraph.js:232:43)\n at /home/solo
+/did-workers/node_modules/.pnpm/metro@0.80.12
+/node_modules/metro/src/lib/transformHelpers.js:
+156:21)"},"errors":[{"description":"Unable to resolve
+module ./node_modules/.pnpm/expo-router@3.5
+.24_q3dffv5ixarsidny44cpayftbi/node_modules
+/expo-router/entry from /home/solo/did-workers/
+apps/mobile/.: \n\nNone of these files exist:
+\n * node_modules/.pnpm/expo-router@3.5.24
+_q3dffv5ixarsidny44cpayftbi/node_modules/expo
+-router/entry(.android.ts|.native.ts|.ts|.android
+.tsx|.native.tsx|.tsx|.android.mjs|.native.mjs|.mjs|
+.android.js|.native.js|.js|.android.jsx|.native.jsx|.jsx|
+.android.json|.native.json|.json|.android.cjs|.native
+.cjs|.cjs|.android.scss|.native.scss|.scss|.android
+.sass|.native.sass|.sass|.android.css|.native.css|
+.css)\n * node_modules/.pnpm/expo-router@3
+.5.24_q3dffv5ixarsidny44cpayftbi/node_modules
+/expo-router/entry"}],"name":"Error","stack":"Error:
+Unable to resolve module ./node_modules/.pnpm
+/expo-router@3.5.24_q3dffv5ixarsidny44cpayftbi
+/node_modules/expo-router/entry from /home/
+solo/did-workers/apps/mobile/.: \n\nNone of
+these files exist:\n * node_modules/.pnpm/expo
+-router@3.5.24_q3dffv5ixarsidny44cpayftbi/node
+_modules/expo-router/entry(.android.ts|.native
+.ts|.ts|.android.tsx|.native.tsx|.tsx|.android.mjs|
+.native.mjs|.mjs|.android.js|.native.js|.js|.android
+.jsx|.native.jsx|.jsx|.android.json|.native.json|.json|
+.android.cjs|.native.cjs|.cjs|.android.scss|.native
+.scss|.scss|.android.sass|.native.sass|.sass|.android
+.css|.native.css|.css)\n * node_modules/.pnpm
+/expo-router@3.5.24_q3dffv5ixarsidny44cpayftbi
+/node_modules/expo-router/entry\n at
+ModuleResolver.resolveDependency (/home/solo
+
+
