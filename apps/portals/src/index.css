@@ -4,31 +4,124 @@
 
 @layer base {
   html {
-    @apply antialiased;
+    @apply antialiased scroll-smooth;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
   }
+
   body {
-    @apply bg-surface-50 text-surface-900;
+    @apply bg-surface-50 text-surface-900 font-sans;
   }
-  * {
-    @apply border-surface-200;
+
+  *,
+  *::before,
+  *::after {
+    border-color: theme('colors.surface.200');
+  }
+
+  ::selection {
+    @apply bg-primary-100 text-primary-900;
+  }
+
+  :focus-visible {
+    @apply outline-none ring-2 ring-primary-500 ring-offset-2;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold tracking-tight;
   }
 }
 
 @layer components {
+  /* Page transition */
+  .page-enter {
+    @apply animate-fade-in;
+  }
+
+  /* QR code */
   .qr-code {
     @apply inline-block;
   }
   .qr-code canvas {
     @apply block;
   }
+
+  /* Sidebar nav item */
+  .nav-item {
+    @apply flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium
+           text-sidebar-text transition-all duration-150 cursor-pointer select-none;
+  }
+  .nav-item:hover {
+    @apply bg-sidebar-hover text-sidebar-text-active;
+  }
+  .nav-item.active {
+    @apply bg-sidebar-active text-sidebar-text-active border-l-2 border-primary-400;
+  }
+
+  /* Form group */
+  .form-grid {
+    @apply grid grid-cols-1 md:grid-cols-2 gap-4;
+  }
+
+  /* Skeleton shimmer */
+  .skeleton {
+    @apply rounded-lg bg-surface-100 animate-pulse-subtle;
+  }
+
+  /* Status dot */
+  .status-dot {
+    @apply w-2 h-2 rounded-full flex-shrink-0;
+  }
+  .status-dot-success { @apply bg-success-500; }
+  .status-dot-warning { @apply bg-warning-500; }
+  .status-dot-danger  { @apply bg-danger-500; }
+
+  /* Action button row */
+  .action-row {
+    @apply flex items-center justify-end gap-3 pt-4 border-t border-surface-200 mt-4;
+  }
+
+  /* Empty state */
+  .empty-state {
+    @apply flex flex-col items-center justify-center py-16 text-center;
+  }
 }
 
 @layer utilities {
+  /* Hide scrollbar */
   .scrollbar-hide {
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
+  }
+
+  /* Custom scrollbar */
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: theme('colors.surface.300') transparent;
+  }
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    @apply bg-surface-300 rounded-full;
+  }
+
+  /* Text truncate utilities */
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Glass effect */
+  .glass {
+    backdrop-filter: blur(12px);
+    background-color: rgba(255, 255, 255, 0.8);
   }
 }

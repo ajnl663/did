@@ -1,18 +1,22 @@
 {
   "name": "@did-workers/mock-api",
   "version": "0.1.0",
-  "main": "src/index.ts",
-  "types": "src/index.ts",
+  "main": "dist/server.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
+    "start": "node dist/server.js",
     "seed": "node dist/seed.js"
   },
   "dependencies": {
-    "msw": "^2.3.1",
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
     "uuid": "^9.0.1"
   },
   "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/cors": "^2.8.17",
     "@types/uuid": "^9.0.8",
     "typescript": "^5.5.3"
   }

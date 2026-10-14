@@ -64,16 +64,17 @@ services:
       timeout: 10s
       retries: 5
 
-  # Indy Tails Server
+  # Indy Tails Server (simple file server for demo - serves tails files from volume)
+  # Note: Real deployment would use proper indy-tails-server image
   tails-server:
-    image: hyperledger/indy-tails-server:latest
+    image: nginx:alpine
     container_name: did-workers-tails
     ports:
       - "8088:8088"
     volumes:
-      - tails_data:/var/lib/indy/tails
+      - tails_data:/usr/share/nginx/html:ro
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8088/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:8088"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -100,8 +101,8 @@ services:
   # Web Portals
   portals:
     build:
-      context: ../apps/portals
-      dockerfile: Dockerfile
+      context: ..
+      dockerfile: apps/portals/Dockerfile
     container_name: did-workers-portals
     ports:
       - "3000:3000"
