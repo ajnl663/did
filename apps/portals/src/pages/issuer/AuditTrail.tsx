@@ -52,12 +52,12 @@ export function AuditTrail() {
           <Input
             placeholder="Search audit logs..."
             value={search}
-            onChange={setSearch}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearch(e.target.value)}
             leftIcon={<Icon name="search" size={18} />}
           />
           <Select
             value={actionFilter}
-            onChange={setActionFilter}
+            onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setActionFilter(e.target.value)}
             options={[
               { value: 'all', label: 'All Actions' },
               ...actions.map(a => ({ value: a, label: a.replace(/_/g, ' ') })),

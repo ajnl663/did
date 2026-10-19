@@ -36,7 +36,7 @@ export function AuditLogs() {
         <Input
           placeholder="Search audit logs..."
           value={search}
-          onChange={setSearch}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearch(e.target.value)}
           leftIcon={<Icon name="search" size={18} />}
         />
       </Card>

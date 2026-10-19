@@ -39,7 +39,11 @@ export function FormField({
   rightIcon,
   className,
 }: FormFieldProps) {
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onChange?.(e.target.value);
+  };
+
+  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     onChange?.(e.target.value);
   };
 
@@ -55,7 +59,7 @@ export function FormField({
         helperText={helperText}
         placeholder={placeholder}
         value={value}
-        onChange={handleChange}
+        onChange={handleSelectChange}
         onBlur={handleBlur}
         disabled={disabled}
         options={options || []}
@@ -75,7 +79,7 @@ export function FormField({
       helperText={helperText}
       placeholder={placeholder}
       value={value}
-      onChange={handleChange}
+      onChange={handleInputChange}
       onBlur={handleBlur}
       disabled={disabled}
       leftIcon={leftIcon}

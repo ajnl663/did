@@ -146,7 +146,7 @@ export function IssueCredential() {
             <label className="block text-sm font-medium text-surface-700 mb-3">Credential Type</label>
             <Select
               value={selectedType}
-              onChange={setSelectedType}
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSelectedType(e.target.value)}
               options={credentialTypes.map(c => ({ value: c.id, label: c.label }))}
               fullWidth
             />

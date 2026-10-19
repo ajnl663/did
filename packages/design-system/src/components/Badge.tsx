@@ -24,11 +24,20 @@ const sizes = {
   lg: 'px-3 py-1.5 text-base',
 };
 
+const dotColors: Record<string, string> = {
+  default: 'bg-surface-400',
+  primary: 'bg-primary-500',
+  success: 'bg-success-500',
+  warning: 'bg-warning-500',
+  danger: 'bg-danger-500',
+  outline: 'bg-surface-400',
+};
+
 export function Badge({ variant = 'default', size = 'md', dot, className, children }: BadgeProps) {
   return (
     <span className={clsx('inline-flex items-center gap-1.5 font-medium rounded-full', variants[variant], sizes[size], className)}>
       {dot && (
-        <span className={clsx('w-1.5 h-1.5 rounded-full', variant === 'outline' ? 'bg-surface-400' : `bg-${variant}-500`)} />
+        <span className={clsx('w-1.5 h-1.5 rounded-full', dotColors[variant])} />
       )}
       {children}
     </span>

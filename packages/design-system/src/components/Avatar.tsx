@@ -1,5 +1,6 @@
 'use client';
 import { clsx } from 'clsx';
+import { Icon } from './Icon';
 
 export interface AvatarProps {
   src?: string;
@@ -18,6 +19,13 @@ const sizeClasses = {
   xl: 'w-16 h-16 text-xl',
 };
 
+const iconSizes: Record<string, number> = { xs: 10, sm: 14, md: 18, lg: 22, xl: 28 };
+
+const bgColors = [
+  'bg-primary-500', 'bg-success-500', 'bg-warning-500', 'bg-danger-500',
+  'bg-indigo-500', 'bg-teal-500', 'bg-orange-500', 'bg-cyan-500',
+];
+
 export function Avatar({ src, alt, name, size = 'md', className, shape = 'circle' }: AvatarProps) {
   const initials = name
     ?.split(' ')
@@ -26,10 +34,6 @@ export function Avatar({ src, alt, name, size = 'md', className, shape = 'circle
     .toUpperCase()
     .slice(0, 2);
 
-  const bgColors = [
-    'bg-primary-500', 'bg-success-500', 'bg-warning-500', 'bg-danger-500',
-    'bg-purple-500', 'bg-pink-500', 'bg-indigo-500', 'bg-teal-500',
-  ];
   const colorIndex = name ? name.charCodeAt(0) % bgColors.length : 0;
 
   if (src) {
@@ -53,9 +57,7 @@ export function Avatar({ src, alt, name, size = 'md', className, shape = 'circle
       )}
       aria-label={name}
     >
-      {initials || <Icon name="user" size={size === 'xs' ? 10 : size === 'sm' ? 14 : size === 'md' ? 18 : size === 'lg' ? 22 : 28} />}
+      {initials || <Icon name="user" size={iconSizes[size]} />}
     </div>
   );
 }
-
-import { Icon } from './Icon';

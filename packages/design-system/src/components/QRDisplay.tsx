@@ -1,6 +1,6 @@
 'use client';
+import { useState, useEffect } from 'react';
 import { clsx } from 'clsx';
-import { Icon } from './Icon';
 
 export interface QRDisplayProps {
   data: string;
@@ -11,6 +11,32 @@ export interface QRDisplayProps {
   fps?: number;
   className?: string;
   onFrameChange?: (index: number) => void;
+}
+
+function generateQRMatrix(text: string, modules = 25): boolean[][] {
+  const matrix: boolean[][] = [];
+  let seed = 0;
+  for (let i = 0; i < text.length; i++) seed = (seed * 31 + text.charCodeAt(i)) & 0x7fffffff;
+
+  for (let r = 0; r < modules; r++) {
+    const row: boolean[] = [];
+    for (let c = 0; c < modules; c++) {
+      const inFinder = (r < 7 && c < 7) || (r < 7 && c >= modules - 7) || (r >= modules - 7 && c < 7);
+      if (inFinder) {
+        const dr = r < 7 ? r : r - (modules - 7);
+        const dc = c < 7 ? c : c - (modules - 7);
+        const onBorder = dr === 0 || dr === 6 || dc === 0 || dc === 6;
+        const inCore = dr >= 2 && dr <= 4 && dc >= 2 && dc <= 4;
+        const inGap = (r < 8 && c < 8) || (r < 8 && c >= modules - 8) || (r >= modules - 8 && c < 8);
+        row.push(inGap && !onBorder && !inCore ? false : (onBorder || inCore));
+      } else {
+        seed = (seed * 1103515245 + 12345) & 0x7fffffff;
+        row.push((seed & 1) === 1);
+      }
+    }
+    matrix.push(row);
+  }
+  return matrix;
 }
 
 export function QRDisplay({
@@ -39,11 +65,32 @@ export function QRDisplay({
 
   const displayIndex = frameIndex ?? currentFrame;
   const frameData = totalFrames && totalFrames > 1 ? `${data}::${displayIndex}/${totalFrames}` : data;
+  const matrix = generateQRMatrix(frameData);
+  const modules = matrix.length;
+  const cellSize = size / modules;
 
   return (
     <div className={clsx('flex flex-col items-center gap-4', className)}>
-      <div className="bg-white p-4 rounded-xl shadow-card">
-        <div id={`qr-${displayIndex}`} className="qr-code" />
+      <div className="bg-white p-4 rounded-2xl shadow-card border border-surface-100">
+        <div className="relative" style={{ width: size, height: size }}>
+          <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="block">
+            <rect width={size} height={size} fill="#ffffff" />
+            {matrix.map((row, r) =>
+              row.map((on, c) =>
+                on ? (
+                  <rect
+                    key={`${r}-${c}`}
+                    x={c * cellSize}
+                    y={r * cellSize}
+                    width={cellSize}
+                    height={cellSize}
+                    fill="#0f172a"
+                  />
+                ) : null
+              )
+            )}
+          </svg>
+        </div>
       </div>
       {totalFrames && totalFrames > 1 && (
         <div className="flex items-center gap-2 text-sm text-surface-500">
@@ -61,27 +108,6 @@ export function QRDisplay({
           </div>
         </div>
       )}
-      <script
-        dangerouslySetInnerHTML={{
-          __html: `
-            (function() {
-              var el = document.getElementById('qr-${displayIndex}');
-              if (el && !el.hasChildNodes()) {
-                var qr = new QRCode(el, {
-                  text: ${JSON.stringify(frameData)},
-                  width: ${size},
-                  height: ${size},
-                  colorDark: '#000000',
-                  colorLight: '#ffffff',
-                  correctLevel: QRCode.CorrectLevel.M
-                });
-              }
-            })();
-          `,
-        }}
-      />
     </div>
   );
 }
-
-import { useState, useEffect } from 'react';

@@ -1,33 +1,27 @@
 import { useEffect, useState } from 'react';
-import { PageHeader, Card, Badge, Button, Icon, StatCard, Table } from '@did-workers/design-system';
+import { useNavigate } from 'react-router-dom';
+import { PageHeader, Card, Badge, Button, Icon, StatCard, StatusBadge } from '@did-workers/design-system';
 import { useCredentialEngine } from '../../context/CredentialEngineContext';
 import { t } from '@did-workers/i18n';
-
-interface Stat {
-  label: string;
-  value: string | number;
-  change?: string;
-  icon: string;
-  color: 'primary' | 'success' | 'warning' | 'danger';
-}
+import type { Credential } from '@did-workers/credential-engine';
 
 export function IssuerDashboard() {
+  const navigate = useNavigate();
   const engine = useCredentialEngine();
-  const [stats, setStats] = useState<Stat[]>([]);
-  const [recentCredentials, setRecentCredentials] = useState<any[]>([]);
+  const [stats, setStats] = useState<{ label: string; value: string | number; icon: string; color: 'primary' | 'success' | 'warning' | 'danger' }[]>([]);
+  const [recentCredentials, setRecentCredentials] = useState<Credential[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadData = async () => {
-      const [creds, orgs] = await Promise.all([
+      const [creds] = await Promise.all([
         engine.getCredentials(),
-        engine.getOrganizations(),
       ]);
       setStats([
-        { label: t('issuer.issuedCredentials') || 'Credentials Issued', value: creds.length, icon: 'file-text', color: 'primary' },
-        { label: t('issuer.activeConnections') || 'Active Connections', value: 3, icon: 'users', color: 'success' },
-        { label: t('issuer.pendingOffers') || 'Pending Offers', value: 1, icon: 'id-card', color: 'warning' },
-        { label: t('issuer.revokedCredentials') || 'Revoked', value: creds.filter(c => c.status === 'revoked').length, icon: 'shield-x', color: 'danger' },
+        { label: 'Credentials Issued', value: creds.length, icon: 'file-text', color: 'primary' },
+        { label: 'Active Connections', value: 3, icon: 'users', color: 'success' },
+        { label: 'Pending Offers', value: 1, icon: 'id-card', color: 'warning' },
+        { label: 'Revoked', value: creds.filter(c => c.status === 'revoked').length, icon: 'shield-x', color: 'danger' },
       ]);
       setRecentCredentials(creds.slice(0, 5));
       setLoading(false);
@@ -35,15 +29,28 @@ export function IssuerDashboard() {
     loadData();
   }, [engine]);
 
-  if (loading) return <div className="flex items-center justify-center h-64">Loading...</div>;
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <Icon name="loader" size={28} className="text-primary-500" />
+      </div>
+    );
+  }
+
+  const quickActions = [
+    { label: 'Connect New Worker', icon: 'user', path: '/issuer/connect' },
+    { label: 'Issue Single Credential', icon: 'id-card', path: '/issuer/issue' },
+    { label: 'Bulk Issue from CSV', icon: 'list-check', path: '/issuer/bulk' },
+    { label: 'View Audit Trail', icon: 'clipboard', path: '/issuer/audit' },
+  ];
 
   return (
     <div>
       <PageHeader
-        title={t('issuer.dashboard') || 'Dashboard'}
-        description={t('issuer.dashboardDesc') || 'Overview of your credential issuance activity'}
+        title="Dashboard"
+        description="Overview of your credential issuance activity"
         action={
-          <Button onClick={() => window.location.href = '/issuer/issue'}>
+          <Button onClick={() => navigate('/issuer/issue')}>
             <Icon name="plus" size={18} />
             Issue Credential
           </Button>
@@ -52,75 +59,80 @@ export function IssuerDashboard() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         {stats.map((stat, i) => (
-          <Card key={i} variant="elevated" padding="lg" className="stat-card">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-surface-500">{stat.label}</p>
-                <p className="text-3xl font-bold text-surface-900 mt-1">{stat.value}</p>
-              </div>
-              <div className={`w-12 h-12 rounded-xl bg-${stat.color}-50 flex items-center justify-center`}>
-                <Icon name={stat.icon} size={24} className={`text-${stat.color}-600`} />
-              </div>
-            </div>
-          </Card>
+          <StatCard key={i} {...stat} />
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card variant="elevated" padding="none">
-          <div className="p-6 border-b border-surface-200">
-            <h3 className="text-lg font-semibold">Recent Credentials</h3>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Recent credentials — spans 2 columns */}
+        <Card variant="elevated" padding="none" className="lg:col-span-2">
+          <div className="card-header">
+            <h3 className="card-title">Recent Credentials</h3>
+            <Button variant="ghost" size="sm" onClick={() => navigate('/issuer/credentials')}>
+              View all
+              <Icon name="chevron-right" size={16} />
+            </Button>
           </div>
           <div className="overflow-x-auto">
-            <Table>
+            <table className="w-full">
               <thead>
-                <tr>
-                  <th>Worker</th>
-                  <th>Type</th>
-                  <th>Status</th>
-                  <th>Issued</th>
+                <tr className="border-b border-surface-100">
+                  <th className="px-5 py-3 text-left text-xs font-semibold text-surface-500 uppercase tracking-wider">Worker</th>
+                  <th className="px-5 py-3 text-left text-xs font-semibold text-surface-500 uppercase tracking-wider">Type</th>
+                  <th className="px-5 py-3 text-left text-xs font-semibold text-surface-500 uppercase tracking-wider">Status</th>
+                  <th className="px-5 py-3 text-left text-xs font-semibold text-surface-500 uppercase tracking-wider">Issued</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="divide-y divide-surface-100">
                 {recentCredentials.map(cred => (
-                  <tr key={cred.id}>
-                    <td className="font-medium">{cred.attributes.full_name || cred.holderDid.slice(0, 20)}</td>
-                    <td>{cred.schemaId.replace('_', ' ')}</td>
-                    <td><Badge variant={cred.status === 'valid' ? 'success' : cred.status === 'revoked' ? 'danger' : 'warning'} size="sm">{cred.status}</Badge></td>
-                    <td className="text-surface-500">{new Date(cred.issuedOn).toLocaleDateString()}</td>
+                  <tr key={cred.id} className="hover:bg-surface-50 transition-colors">
+                    <td className="px-5 py-3.5 text-sm font-medium text-surface-800">
+                      {cred.attributes.full_name || cred.holderDid.slice(0, 16) + '...'}
+                    </td>
+                    <td className="px-5 py-3.5 text-sm text-surface-600">
+                      {cred.schemaId.replace(/_/g, ' ')}
+                    </td>
+                    <td className="px-5 py-3.5">
+                      <StatusBadge
+                        status={cred.status === 'valid' ? 'valid' : cred.status === 'revoked' ? 'revoked' : 'expired'}
+                        size="sm"
+                      />
+                    </td>
+                    <td className="px-5 py-3.5 text-sm text-surface-500">
+                      {new Date(cred.issuedOn).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                    </td>
                   </tr>
                 ))}
               </tbody>
-            </Table>
+            </table>
           </div>
-          <div className="p-4 border-t border-surface-200">
-            <Button variant="ghost" size="sm" fullWidth onClick={() => window.location.href = '/issuer/credentials'}>
-              View All Credentials
-            </Button>
-          </div>
+          {recentCredentials.length === 0 && (
+            <div className="empty-state py-12">
+              <Icon name="file-text" size={32} className="text-surface-300 mb-3" />
+              <p className="text-surface-500 text-sm">No credentials issued yet</p>
+            </div>
+          )}
         </Card>
 
+        {/* Quick actions */}
         <Card variant="elevated" padding="none">
-          <div className="p-6 border-b border-surface-200">
-            <h3 className="text-lg font-semibold">Quick Actions</h3>
+          <div className="card-header">
+            <h3 className="card-title">Quick Actions</h3>
           </div>
-          <div className="p-6 space-y-3">
-            <Button variant="outline" fullWidth onClick={() => window.location.href = '/issuer/connect'}>
-              <Icon name="user" size={18} className="mr-2" />
-              Connect New Worker
-            </Button>
-            <Button variant="outline" fullWidth onClick={() => window.location.href = '/issuer/issue'}>
-              <Icon name="id-card" size={18} className="mr-2" />
-              Issue Single Credential
-            </Button>
-            <Button variant="outline" fullWidth onClick={() => window.location.href = '/issuer/bulk'}>
-              <Icon name="list-check" size={18} className="mr-2" />
-              Bulk Issue from CSV
-            </Button>
-            <Button variant="outline" fullWidth onClick={() => window.location.href = '/issuer/audit'}>
-              <Icon name="file-text" size={18} className="mr-2" />
-              View Audit Trail
-            </Button>
+          <div className="p-3">
+            {quickActions.map((action, i) => (
+              <button
+                key={i}
+                onClick={() => navigate(action.path)}
+                className="w-full flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium text-surface-700 hover:bg-surface-50 hover:text-primary-700 transition-all duration-150 group"
+              >
+                <div className="w-9 h-9 rounded-lg bg-surface-100 flex items-center justify-center group-hover:bg-primary-50 transition-colors">
+                  <Icon name={action.icon} size={18} className="text-surface-500 group-hover:text-primary-600 transition-colors" />
+                </div>
+                <span className="flex-1 text-left">{action.label}</span>
+                <Icon name="chevron-right" size={16} className="text-surface-300 group-hover:text-primary-500 transition-colors" />
+              </button>
+            ))}
           </div>
         </Card>
       </div>

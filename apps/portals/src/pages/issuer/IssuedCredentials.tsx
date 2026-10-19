@@ -64,12 +64,12 @@ export function IssuedCredentials() {
           <Input
             placeholder="Search credentials..."
             value={search}
-            onChange={setSearch}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearch(e.target.value)}
             leftIcon={<Icon name="search" size={18} />}
           />
           <Select
             value={statusFilter}
-            onChange={setStatusFilter}
+            onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setStatusFilter(e.target.value)}
             options={[
               { value: 'all', label: 'All Statuses' },
               { value: 'valid', label: 'Valid' },
@@ -79,7 +79,7 @@ export function IssuedCredentials() {
           />
           <Select
             value={typeFilter}
-            onChange={setTypeFilter}
+            onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setTypeFilter(e.target.value)}
             options={[
               { value: 'all', label: 'All Types' },
               { value: 'identity_verification', label: 'Identity Verification' },

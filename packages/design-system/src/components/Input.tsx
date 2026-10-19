@@ -2,7 +2,7 @@
 import { InputHTMLAttributes, forwardRef } from 'react';
 import { clsx } from 'clsx';
 
-export interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'size'> {
+export interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size'> {
   label?: string;
   error?: string;
   helperText?: string;
@@ -10,29 +10,13 @@ export interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 
   rightIcon?: React.ReactNode;
   fullWidth?: boolean;
   size?: 'sm' | 'md' | 'lg';
-  /** Accepts both native event handler and string shorthand (value: string) => void */
-  onChange?: ((e: React.ChangeEvent<HTMLInputElement>) => void) | ((value: string) => void);
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ className, label, error, helperText, leftIcon, rightIcon, fullWidth, id, size = 'md', onChange, ...props }, ref) => {
+  ({ className, label, error, helperText, leftIcon, rightIcon, fullWidth, id, size = 'md', ...props }, ref) => {
     const inputId = id || label?.toLowerCase().replace(/\s+/g, '-') || `input-${Math.random().toString(36).slice(2, 7)}`;
     const errorId = `${inputId}-error`;
     const helperId = `${inputId}-helper`;
-
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      if (!onChange) return;
-      // Support both (e) => void and (value: string) => void call signatures
-      if (onChange.length === 1) {
-        try {
-          (onChange as (e: React.ChangeEvent<HTMLInputElement>) => void)(e);
-        } catch {
-          (onChange as (value: string) => void)(e.target.value);
-        }
-      } else {
-        (onChange as (value: string) => void)(e.target.value);
-      }
-    };
 
     const sizes = {
       sm: 'py-1.5 text-sm',
@@ -71,7 +55,6 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             )}
             aria-invalid={error ? 'true' : 'false'}
             aria-describedby={error ? errorId : helperText ? helperId : undefined}
-            onChange={handleChange}
             {...props}
           />
           {rightIcon && (
