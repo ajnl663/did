@@ -1,44 +1,27 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, ScrollView } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  ScrollView,
+  TouchableOpacity,
+} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useCredentialEngine } from '../../context/CredentialEngineContext';
-import { t, setLanguage } from '@did-workers/i18n';
+import { setLanguage, getAvailableLanguages } from '@did-workers/i18n';
+import { AppButton } from '../../components/AppButton';
+import { AppSwitch } from '../../components/AppSwitch';
+import { theme, typography, spacing, radii } from '../../theme/tokens';
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff' },
-  content: { flex: 1, padding: 24, justifyContent: 'center' },
-  header: { alignItems: 'center', marginBottom: 32 },
-  iconContainer: { width: 80, height: 80, borderRadius: 40, backgroundColor: '#e0f2fe', justifyContent: 'center', alignItems: 'center', marginBottom: 16 },
-  title: { fontSize: 28, fontWeight: '700', color: '#171717', textAlign: 'center' },
-  subtitle: { fontSize: 16, color: '#737373', textAlign: 'center', marginTop: 8, lineHeight: 24 },
-  languageCard: { flexDirection: 'row', alignItems: 'center', padding: 16, borderRadius: 16, borderWidth: 2, borderColor: '#e5e5e5', marginBottom: 12 },
-  languageCardSelected: { borderColor: '#0ea5e9', backgroundColor: '#f0f9ff' },
-  flag: { fontSize: 28, marginRight: 16 },
-  languageInfo: { flex: 1 },
-  languageName: { fontSize: 18, fontWeight: '600', color: '#171717' },
-  languageNative: { fontSize: 14, color: '#737373' },
-  checkIcon: { color: '#0ea5e9' },
-  continueButton: { backgroundColor: '#0ea5e9', paddingVertical: 16, borderRadius: 12, alignItems: 'center', marginTop: 24 },
-  continueButtonText: { color: '#fff', fontSize: 18, fontWeight: '600' },
-  voiceToggle: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 16, borderRadius: 16, backgroundColor: '#f5f5f5', marginTop: 24 },
-  voiceLabel: { fontSize: 16, fontWeight: '500', color: '#171717' },
-  switchTrack: { width: 52, height: 28, borderRadius: 14 },
-  switchTrackOn: { backgroundColor: '#0ea5e9' },
-  switchTrackOff: { backgroundColor: '#e5e5e5' },
-  switchThumb: { width: 24, height: 24, borderRadius: 12, backgroundColor: '#fff', shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.2, shadowRadius: 2, elevation: 2 },
-  switchThumbOn: { marginLeft: 24 },
-});
-
-const languages = [
-  { code: 'en', name: 'English', nativeName: 'English', flag: '🇬🇧' },
-  { code: 'hi', name: 'Hindi', nativeName: 'हिन्दी', flag: '🇮🇳' },
-  { code: 'mr', name: 'Marathi', nativeName: 'मराठी', flag: '🇮🇳' },
-] as const;
+const languages = getAvailableLanguages();
 
 export default function LanguageScreen() {
   const router = useRouter();
   const engine = useCredentialEngine();
+  const insets = useSafeAreaInsets();
   const [selectedLang, setSelectedLang] = useState<'en' | 'hi' | 'mr'>('en');
   const [voiceEnabled, setVoiceEnabled] = useState(true);
 
@@ -51,46 +34,140 @@ export default function LanguageScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.content}>
-        <View style={styles.header}>
-          <View style={styles.iconContainer}>
-            <Ionicons name="shield-checkmark" size={40} color="#0ea5e9" />
-          </View>
-          <Text style={styles.title}>Welcome to DID Workers</Text>
-          <Text style={styles.subtitle}>
-            Choose your language to get started. You can change this later in settings.
-          </Text>
+      <ScrollView
+        contentContainerStyle={[styles.content, { paddingTop: insets.top + spacing['2xl'] }]}
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={styles.heroIcon}>
+          <Ionicons name="shield-checkmark" size={44} color={theme.primary} />
+        </View>
+        <Text style={styles.title}>Welcome to DID Workers</Text>
+        <Text style={styles.subtitle}>
+          Your portable, verifiable work identity. Choose your language to get started.
+        </Text>
+
+        <View style={styles.langSection}>
+          {languages.map((lang) => {
+            const selected = selectedLang === lang.code;
+            return (
+              <TouchableOpacity
+                key={lang.code}
+                style={[styles.langCard, selected && styles.langCardSelected]}
+                onPress={() => setSelectedLang(lang.code)}
+                activeOpacity={0.85}
+              >
+                <Text style={styles.flag}>{lang.flag}</Text>
+                <View style={styles.langInfo}>
+                  <Text style={styles.langName}>{lang.name}</Text>
+                  <Text style={styles.langNative}>{lang.nativeName}</Text>
+                </View>
+                {selected && (
+                  <View style={styles.checkBadge}>
+                    <Ionicons name="checkmark" size={16} color="#fff" />
+                  </View>
+                )}
+              </TouchableOpacity>
+            );
+          })}
         </View>
 
-        {languages.map(lang => (
-          <TouchableOpacity
-            key={lang.code}
-            style={[styles.languageCard, selectedLang === lang.code && styles.languageCardSelected]}
-            onPress={() => setSelectedLang(lang.code)}
-          >
-            <Text style={styles.flag}>{lang.flag}</Text>
-            <View style={styles.languageInfo}>
-              <Text style={styles.languageName}>{lang.name}</Text>
-              <Text style={styles.languageNative}>{lang.nativeName}</Text>
+        <TouchableOpacity style={styles.voiceRow} activeOpacity={1} onPress={() => setVoiceEnabled(!voiceEnabled)}>
+          <View style={styles.voiceLeft}>
+            <View style={[styles.voiceIcon, { backgroundColor: theme.primaryBg }]}>
+              <Ionicons name="volume-high" size={20} color={theme.primary} />
             </View>
-            {selectedLang === lang.code && <Ionicons name="checkmark-circle" size={24} color="#0ea5e9" />}
-          </TouchableOpacity>
-        ))}
-
-        <View style={styles.voiceToggle}>
-          <View>
-            <Text style={styles.voiceLabel}>Spoken Help</Text>
-            <Text style={{ fontSize: 12, color: '#737373' }}>Voice prompts for guidance</Text>
+            <View>
+              <Text style={styles.voiceLabel}>Spoken Help</Text>
+              <Text style={styles.voiceSubtext}>Voice prompts for guidance</Text>
+            </View>
           </View>
-          <View style={[styles.switchTrack, voiceEnabled ? styles.switchTrackOn : styles.switchTrackOff]}>
-            <View style={[styles.switchThumb, voiceEnabled ? styles.switchThumbOn : {}]} />
-          </View>
-        </View>
-
-        <TouchableOpacity style={styles.continueButton} onPress={handleContinue}>
-          <Text style={styles.continueButtonText}>Continue</Text>
+          <AppSwitch value={voiceEnabled} onValueChange={setVoiceEnabled} />
         </TouchableOpacity>
       </ScrollView>
+
+      <View style={[styles.footer, { paddingBottom: insets.bottom + spacing.md }]}>
+        <AppButton label="Continue" onPress={handleContinue} fullWidth size="lg" icon="arrow-forward" iconPosition="right" />
+      </View>
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: { flex: 1, backgroundColor: theme.background },
+  content: { paddingHorizontal: spacing.lg, paddingBottom: spacing['2xl'] },
+  heroIcon: {
+    width: 80,
+    height: 80,
+    borderRadius: radii['2xl'],
+    backgroundColor: theme.primaryBg,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: spacing.lg,
+    alignSelf: 'center',
+  },
+  title: {
+    fontSize: typography['3xl'],
+    fontWeight: typography.bold,
+    color: theme.text,
+    textAlign: 'center',
+  },
+  subtitle: {
+    fontSize: typography.base,
+    color: theme.textSecondary,
+    textAlign: 'center',
+    marginTop: spacing.sm,
+    lineHeight: 24,
+    paddingHorizontal: spacing.md,
+  },
+  langSection: {
+    marginTop: spacing['2xl'],
+    gap: spacing.sm,
+  },
+  langCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: spacing.md,
+    borderRadius: radii.lg,
+    borderWidth: 2,
+    borderColor: theme.border,
+    backgroundColor: theme.surface,
+  },
+  langCardSelected: {
+    borderColor: theme.primary,
+    backgroundColor: theme.primaryBg,
+  },
+  flag: { fontSize: 28, marginRight: spacing.md },
+  langInfo: { flex: 1 },
+  langName: { fontSize: typography.lg, fontWeight: typography.semibold, color: theme.text },
+  langNative: { fontSize: typography.sm, color: theme.textSecondary, marginTop: 2 },
+  checkBadge: {
+    width: 24,
+    height: 24,
+    borderRadius: radii.full,
+    backgroundColor: theme.primary,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  voiceRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: spacing.md,
+    borderRadius: radii.lg,
+    backgroundColor: theme.surface,
+    marginTop: spacing.lg,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: theme.border,
+  },
+  voiceLeft: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm + 2, flex: 1 },
+  voiceIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: radii.md,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  voiceLabel: { fontSize: typography.base, fontWeight: typography.medium, color: theme.text },
+  voiceSubtext: { fontSize: typography.sm, color: theme.textSecondary, marginTop: 1 },
+  footer: { paddingHorizontal: spacing.lg, paddingTop: spacing.md, backgroundColor: theme.background },
+});
