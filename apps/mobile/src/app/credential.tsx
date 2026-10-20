@@ -32,7 +32,8 @@ export default function CredentialDetailScreen() {
   const router = useRouter();
   const engine = useCredentialEngine();
   const insets = useSafeAreaInsets();
-  const params = useLocalSearchParams<{ id: string }>();
+  const params = useLocalSearchParams<{ id: string | string[] }>();
+  const credId = Array.isArray(params.id) ? params.id[0] : params.id;
   const [credential, setCredential] = useState<Credential | null>(null);
   const [loading, setLoading] = useState(true);
   const [showQR, setShowQR] = useState(false);
@@ -43,7 +44,7 @@ export default function CredentialDetailScreen() {
     const load = async () => {
       try {
         const creds = await engine.getCredentials();
-        const found = creds.find((c) => c.id === params.id);
+        const found = credId ? creds.find((c) => c.id === credId) : null;
         setCredential(found ?? null);
       } catch {
         // keep loading false
@@ -52,15 +53,16 @@ export default function CredentialDetailScreen() {
       }
     };
     load();
-  }, [engine, params.id]);
+  }, [engine, credId]);
 
   const handleShare = async () => {
     if (!credential) return;
     setQrBusy(true);
     try {
-      const pres = await engine.generatePresentation('vr-demo', [credential.id], {});
+      const req = await engine.createProofRequest('welfare_desk_workhistory_v1');
+      const pres = await engine.generatePresentation(req.id, [credential.id], {});
       const qr = await engine.generatePresentationQR(pres);
-      setQrData(JSON.stringify(qr[0]));
+      setQrData(qr[0]?.data ?? '');
       setShowQR(true);
     } catch {
       Alert.alert('Error', 'Failed to generate presentation QR.');

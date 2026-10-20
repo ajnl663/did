@@ -71,14 +71,14 @@ export default function PinScreen() {
     setTimeout(() => {
       if (!mounted.current) return;
       setShowSuccess(false);
-      router.replace('/(tabs)');
+      router.replace('/(tabs)/wallet');
     }, 1200);
   };
 
   const handleVerify = async (entered: string) => {
     const valid = await engine.verifyPin(entered);
     if (valid) {
-      router.replace('/(tabs)');
+      router.replace('/(tabs)/wallet');
     } else {
       setError(true);
       Alert.alert('Invalid PIN', 'Please try again.');
